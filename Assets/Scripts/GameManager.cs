@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,13 +33,13 @@ public class GameManager : MonoBehaviour
     private Board board;
     private SpecialGemActivator specialGemActivator;
 
-    // 新增 LevelData 結構 + levelDatas 陣列 ✅
     [System.Serializable]
     public struct LevelData
     {
-        public int targetPrefabIndex; // targetPrefab 的 index
-        public int targetCount;       // 通關要幾個
-        public int roundCount;        // 回合數
+        public int targetPrefabIndex;
+        public int targetCount;
+        public int roundCount;
+        public int[] dropGemIndexes; // 新增！這關實際會掉落哪些寶石 index
     }
 
     [SerializeField] public LevelData[] levelDatas;
@@ -48,9 +49,13 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         InitializeComponents();
-        InitializeLevelDatas(); // 新增呼叫 ✅
+        InitializeLevelDatas();
         UpdateUIElements();
-        setGameLevelTarget();
+
+        if (SceneManager.GetActiveScene().name == "Level")
+        {
+            setGameLevelTarget();
+        }
     }
 
     private void InitializeComponents()
@@ -60,7 +65,6 @@ public class GameManager : MonoBehaviour
         specialGemActivator = new SpecialGemActivator(board);
         currentLevel = LevelManager.Instance.Level;
 
-        // 初始化解析度顯示
         if (resolutionText != null)
         {
             int width = Screen.width;
@@ -110,12 +114,11 @@ public class GameManager : MonoBehaviour
         if (resultPanel != null) resultPanel.SetActive(false);
     }
 
-    // ✅ 改成資料驅動版 setGameLevelTarget()
     private void setGameLevelTarget()
     {
         if (targetPrefab.Length <= 0 || levelDatas == null || levelDatas.Length == 0) return;
 
-        int currentLevel = LevelManager.Instance.Level; // 用 LevelManager 拿目前關卡
+        int currentLevel = LevelManager.Instance.Level;
 
         if (currentLevel < 1 || currentLevel > levelDatas.Length)
         {
@@ -123,9 +126,13 @@ public class GameManager : MonoBehaviour
             currentLevel = 1;
         }
 
-        targetTop = GameObject.Find("/TargetTop");
+        if (targetTop == null)
+        {
+            Debug.LogError("❌ TargetTop 尚未設定，請在 Inspector 指定！");
+            return;
+        }
 
-        LevelData levelData = levelDatas[currentLevel - 1]; // currentLevel 是 1-based，陣列 0-based
+        LevelData levelData = levelDatas[currentLevel - 1];
 
         targetTop.GetComponent<SpriteRenderer>().sprite = targetPrefab[levelData.targetPrefabIndex].GetComponent<SpriteRenderer>().sprite;
         targetTop.transform.localScale = Vector3.one;
@@ -211,33 +218,30 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    // ✅ InitializeLevelDatas() → 你可以直接改數值 → 設 20 關、50 關
     private void InitializeLevelDatas()
     {
-        levelDatas = new LevelData[20];
+        if (targetPrefab == null || targetPrefab.Length == 0)
+        {
+            Debug.LogError("❌ 無法初始化 LevelDatas：targetPrefab 尚未指定或為空！");
+            return;
+        }
 
-        levelDatas[0] = new LevelData { targetPrefabIndex = 0, targetCount = 1, roundCount = 30 };
-        levelDatas[1] = new LevelData { targetPrefabIndex = 0, targetCount = 3, roundCount = 30 };
-        levelDatas[2] = new LevelData { targetPrefabIndex = 1, targetCount = 3, roundCount = 50 };
-        levelDatas[3] = new LevelData { targetPrefabIndex = 1, targetCount = 3, roundCount = 70 };
-        levelDatas[4] = new LevelData { targetPrefabIndex = 2, targetCount = 1, roundCount = 100 };
-        levelDatas[5] = new LevelData { targetPrefabIndex = 2, targetCount = 2, roundCount = 120 };
-        levelDatas[6] = new LevelData { targetPrefabIndex = 3, targetCount = 2, roundCount = 150 };
+        int totalLevels = 20;
+        int maxGemTypes = targetPrefab.Length;
+        levelDatas = new LevelData[totalLevels];
 
-        // 自行補齊 7~19 關（範例先放幾個）
-        levelDatas[7] = new LevelData { targetPrefabIndex = 0, targetCount = 4, roundCount = 50 };
-        levelDatas[8] = new LevelData { targetPrefabIndex = 1, targetCount = 5, roundCount = 60 };
-        levelDatas[9] = new LevelData { targetPrefabIndex = 2, targetCount = 6, roundCount = 70 };
-        levelDatas[10] = new LevelData { targetPrefabIndex = 3, targetCount = 7, roundCount = 80 };
-        levelDatas[11] = new LevelData { targetPrefabIndex = 0, targetCount = 5, roundCount = 90 };
-        levelDatas[12] = new LevelData { targetPrefabIndex = 1, targetCount = 4, roundCount = 100 };
-        levelDatas[13] = new LevelData { targetPrefabIndex = 2, targetCount = 6, roundCount = 110 };
-        levelDatas[14] = new LevelData { targetPrefabIndex = 3, targetCount = 7, roundCount = 120 };
-        levelDatas[15] = new LevelData { targetPrefabIndex = 0, targetCount = 8, roundCount = 130 };
-        levelDatas[16] = new LevelData { targetPrefabIndex = 1, targetCount = 9, roundCount = 140 };
-        levelDatas[17] = new LevelData { targetPrefabIndex = 2, targetCount = 10, roundCount = 150 };
-        levelDatas[18] = new LevelData { targetPrefabIndex = 3, targetCount = 5, roundCount = 160 };
-        levelDatas[19] = new LevelData { targetPrefabIndex = 0, targetCount = 6, roundCount = 170 };
+        for (int i = 0; i < totalLevels; i++)
+        {
+            int count = Mathf.Min(3 + i / 2, maxGemTypes);
+            int[] drops = Enumerable.Range(0, count).ToArray();
+            levelDatas[i] = new LevelData
+            {
+                targetPrefabIndex = i % maxGemTypes,
+                targetCount = 3 + i % 5,
+                roundCount = 30 + i * 5,
+                dropGemIndexes = drops
+            };
+        }
     }
 
     private void Update()
@@ -251,4 +255,3 @@ public class GameManager : MonoBehaviour
         }
     }
 }
-

@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: Kolo.tw
-  productName: Match3Game
+  companyName: FGU.AI
+  productName: Galaxy Merge
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -40,7 +40,7 @@ PlayerSettings:
     width: 1
     height: 1
   m_SplashScreenLogos:
-  - logo: {fileID: -5241483964165126313, guid: 9aa8e1b9297a7e04983547ac043081f3, type: 3}
+  - logo: {fileID: 4804356986658453403, guid: b677ec08fba228b46b8d550e8ae776ca, type: 3}
     duration: 2
   m_VirtualRealitySplashScreen: {fileID: 0}
   m_HolographicTrackingLossScreen: {fileID: 0}
@@ -293,7 +293,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 25524aec5aa25d64b9687a72416bacc0, type: 3}
+      m_Icon: {fileID: 2800000, guid: b677ec08fba228b46b8d550e8ae776ca, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0

@@ -17,7 +17,7 @@ namespace Match3Game
         Resetting,    // 遊戲板重置中
         Completed    // 遊戲完成狀態，所有關卡已通過或失敗
     }
-   
+
     // Board 類別是遊戲的核心管理類別
     // 負責管理遊戲板的所有邏輯，包括寶石交換、匹配、消除等
     public class Board : MonoBehaviour
@@ -131,7 +131,7 @@ namespace Match3Game
         // 移動完成狀態的屬性
         // 提供一種簡潔的方式檢查和設置遊戲是否就緒
         #endregion
-        
+
         #region 驗證
         public class SwapValidationResult
         {
@@ -278,12 +278,25 @@ namespace Match3Game
             switch (LevelManager.Instance.Level)
             {
                 case 1: prefabCount = 3; break;
-                case 2: prefabCount = 4; break;
-                case 3: prefabCount = 5; break;
-                case 4: prefabCount = 6; break;
-                case 5: prefabCount = 7; break;
-                case 6: prefabCount = 8; break;
-                case 7: prefabCount = 9; break;
+                case 2: prefabCount = 3; break;
+                case 3: prefabCount = 3; break;
+                case 4: prefabCount = 4; break;
+                case 5: prefabCount = 4; break;
+                case 6: prefabCount = 4; break;
+                case 7: prefabCount = 5; break;
+                case 8: prefabCount = 5; break;
+                case 9: prefabCount = 5; break;
+                case 10: prefabCount = 6; break;
+                case 11: prefabCount = 6; break;
+                case 12: prefabCount = 6; break;
+                case 13: prefabCount = 7; break;
+                case 14: prefabCount = 7; break;
+                case 15: prefabCount = 7; break;
+                case 16: prefabCount = 8; break;
+                case 17: prefabCount = 8; break;
+                case 18: prefabCount = 8; break;
+                case 19: prefabCount = 8; break;
+                case 20: prefabCount = 8; break;
                 default: prefabCount = 3; break;
             }
 
