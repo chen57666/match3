@@ -10,7 +10,8 @@ public class UI_Controller : MonoBehaviour
 
         Button startButton = root.Q<Button>("But_Start");
         Button mapButton = root.Q<Button>("But_Map");
-        Button staffButton = root.Q<Button>("But_Staff"); // ← 新增
+        Button staffButton = root.Q<Button>("But_Staff");
+        Button gameplayButton = root.Q<Button>("But_Gameplay"); // ? 新增這行
 
         if (LevelManager.Instance.Level == 0)
         {
@@ -19,7 +20,10 @@ public class UI_Controller : MonoBehaviour
 
         startButton.clicked += () => { LevelManager.Instance.LoadLevel(); };
         mapButton.clicked += () => { LevelManager.Instance.LoadMap(); };
-        staffButton.clicked += () => { SceneManager.LoadScene("StaffScene"); }; // ← 新增
+        staffButton.clicked += () => { SceneManager.LoadScene("StaffScene"); };
+        gameplayButton.clicked += () => { SceneManager.LoadScene("GameplayScene"); }; // ? 替換為你真正的場景名稱
     }
 }
+
+
 
